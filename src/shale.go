@@ -53,7 +53,7 @@ func main() {
         "equal": opEqual,
         // Data manipulation
         "len": opLen,
-        "cat": opCat,
+        "join": opJoin,
         "split": opSplit,
         "replace": opReplace,
         "getChar": opGetChar,
@@ -394,11 +394,31 @@ func opSys(stack []interface{}) ([]interface{}, string) {
     return []interface{}{string(output), err}, ""
 }
 
-func opCat(stack []interface{}) ([]interface{}, string) {
-    var s string
-    for i := 0; i < len(stack); i++ {
-        s += stack[i].(string)
+func opJoin(stack []interface{}) ([]interface{}, string) {
+    var joinStr string
+    switch stack[0].(type) {
+        case []interface{}:
+            if len(stack) == 2 {
+                switch stack[1].(type) {
+                    case string:
+                        joinStr = stack[1].(string)
+                    default:
+                        shalePanic("join: Inoperable type")
+                }
+            }
+        default:
+            shalePanic("join: Inoperable type")
     }
+    var strSlice []string
+    for i := 0; i < len(stack[0].([]interface{})); i++ {
+        switch stack[0].([]interface{})[0].(type) {
+            case string:
+                strSlice = append(strSlice, stack[0].([]interface{})[i].(string))
+            default:
+                shalePanic("join: Inoperable type")
+        }
+    }
+    s := strings.Join(strSlice, joinStr)
     return []interface{}{s,}, ""
 }
 
