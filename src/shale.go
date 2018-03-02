@@ -51,6 +51,7 @@ func main() {
         "less": opLess,
         "greater": opGreater,
         "equal": opEqual,
+        "assert": opAssert,
         // Data manipulation
         "len": opLen,
         "join": opJoin,
@@ -138,10 +139,7 @@ func main() {
                         retPos = retPos[:len(retPos) - 1]
                     case ";":
                         stack = nil
-                    case "assert":
-                        if stack[0] != true {
-                            shalePanic("assert: Not true")
-                        }
+
                     default:
                         op = ops[tokens[i]]
                         if op == nil {
@@ -943,4 +941,11 @@ func opSum(stack []interface{}) ([]interface{}, string) {
         return []interface{}{result,}, ""
     }
     return []interface{}{int(result),}, ""
+}
+
+func opAssert(stack []interface{}) ([]interface{}, string) {
+    if stack[0] != true {
+        shalePanic("assert: Not true")
+    }
+    return nil, ""
 }
