@@ -63,6 +63,7 @@ func main() {
         "append": opAppend,
         "type": opType,
         "extend": opExtend,
+        "expand": opExpand,
     }
     var variable string
     vars := make(map[string]interface{})
@@ -885,4 +886,15 @@ func opExtend(stack []interface{}) ([]interface{}, string) {
             shalePanic("extend: Inoperable type")
     }
     return []interface{}{vec,}, ""
+}
+
+func opExpand(stack []interface{}) ([]interface{}, string) {
+    var vec []interface{}
+    switch stack[0].(type) {
+        case []interface{}:
+            vec = stack[0].([]interface{})
+        default:
+            shalePanic("expand: Inoperable type")
+    }
+    return vec, ""
 }
