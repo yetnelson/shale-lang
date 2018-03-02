@@ -64,6 +64,7 @@ func main() {
         "type": opType,
         "extend": opExtend,
         "expand": opExpand,
+        "sum": opSum,
     }
     var variable string
     vars := make(map[string]interface{})
@@ -897,4 +898,29 @@ func opExpand(stack []interface{}) ([]interface{}, string) {
             shalePanic("expand: Inoperable type")
     }
     return vec, ""
+}
+
+func opSum(stack []interface{}) ([]interface{}, string) {
+    var returnFloat bool
+    var result float64
+    switch stack[0].(type) {
+        case []interface{}:
+            for i := 0; i < len(stack[0].([]interface{})); i++ {
+                switch stack[0].([]interface{})[i].(type) {
+                    case int:
+                        result += float64(stack[0].([]interface{})[i].(int))
+                    case float64:
+                        returnFloat = true
+                        result += stack[0].([]interface{})[i].(float64)
+                    default:
+                        shalePanic("sum: Inoperable type in op 1")
+                }
+            }
+        default:
+            shalePanic("sum: Inoperable type")
+    }
+    if returnFloat {
+        return []interface{}{result,}, ""
+    }
+    return []interface{}{int(result),}, ""
 }
