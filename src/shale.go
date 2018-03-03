@@ -302,6 +302,14 @@ func opAdd(stack []interface{}) ([]interface{}, string) {
                 default:
                     shalePanic("+: Inoperable type")
             }
+        case string:
+            switch stack[1].(type) {
+                case string:
+                    s := stack[0].(string) + stack[1].(string)
+                    return []interface{}{s,}, ""
+                default:
+                    shalePanic("+: Inoperable type")
+            }
         default:
             shalePanic("+: Inoperable type")
     }
@@ -351,6 +359,14 @@ func opMul(stack []interface{}) ([]interface{}, string) {
                     return []interface{}{stack[0].(float64) * float64(stack[1].(int)),}, ""
                 case float64:
                     return []interface{}{stack[0].(float64) * stack[1].(float64),}, ""
+                default:
+                    shalePanic("*: Inoperable type")
+            }
+        case string:
+            switch stack[1].(type) {
+                case int:
+                    s := strings.Repeat(stack[0].(string), stack[1].(int))
+                    return []interface{}{s,}, ""
                 default:
                     shalePanic("*: Inoperable type")
             }
