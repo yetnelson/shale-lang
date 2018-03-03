@@ -245,15 +245,30 @@ func opPuts(stack []interface{}) ([]interface{}, string) {
 }
 
 func opGet(stack []interface{}) ([]interface{}, string) {
-    vec := stack[0].([]interface{})
-    idx := stack[1]
-    var element interface{}
-    if idx.(int) < 0 {
-        element = vec[len(vec)+idx.(int)]
-    } else {
-        element = vec[idx.(int)]
+    var idx int
+    switch stack[1].(type) {
+        case int:
+            idx  = stack[1].(int)
+        default:
+            shalePanic("get: Inoperable type")
     }
-    return []interface{}{element}, ""
+    switch stack[0].(type) {
+        case []interface{}:
+            vec := stack[0].([]interface{})
+            var element interface{}
+            if idx < 0 {
+                element = vec[len(vec)+idx]
+            } else {
+                element = vec[idx]
+            }
+            return []interface{}{element}, ""
+        case string:
+            s := stack[0].(string)
+            return []interface{}{string([]rune(s)[idx]),}, ""
+        default:
+            shalePanic("get: Inoperable type")
+    }
+    return nil, ""
 }
 
 func opSet(stack []interface{}) ([]interface{}, string) {
