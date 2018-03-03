@@ -66,6 +66,8 @@ func main() {
         "extend": opExtend,
         "expand": opExpand,
         "sum": opSum,
+        "upcase": opUpcase,
+        "downcase": opDowncase,
     }
     var variable string
     vars := make(map[string]interface{})
@@ -948,4 +950,26 @@ func opAssert(stack []interface{}) ([]interface{}, string) {
         shalePanic("assert: Not true")
     }
     return nil, ""
+}
+
+func opUpcase(stack []interface{}) ([]interface{}, string) {
+    var s string
+    switch stack[0].(type) {
+        case string:
+            s = strings.ToUpper(stack[0].(string))
+        default:
+            shalePanic("upcase: Inoperable type")
+    }
+    return []interface{}{s,}, ""
+}
+
+func opDowncase(stack []interface{}) ([]interface{}, string) {
+    var s string
+    switch stack[0].(type) {
+        case string:
+            s = strings.ToLower(stack[0].(string))
+        default:
+            shalePanic("downcase: Inoperable type")
+    }
+    return []interface{}{s,}, ""
 }
